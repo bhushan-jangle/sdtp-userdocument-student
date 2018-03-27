@@ -1,5 +1,6 @@
     var express = require('express');
     var app = express();
+    var logger = require('morgan');
     var bodyParser = require('body-parser');
     var mongoose = require('mongoose');
     mongoose.connect('mongodb://documents:documents@ds213259.mlab.com:13259/studentpdetail');
@@ -88,6 +89,34 @@
         });
     });
 
-    app.listen('8888', function(){
-        console.log('running on 8888...');
+    // uncomment after placing your favicon in /public
+    //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+    app.use(logger('dev'));
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
+
+
+
+    // development error handler
+    // will print stacktrace
+    if (app.get('env') === 'development') {
+      app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+          message: err.message,
+          error: err
+        });
+      });
+    }
+
+    // production error handler
+    // no stacktraces leaked to user
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('error', {
+        message: err.message,
+        error: {}
+      });
     });
+
+    module.exports = app;
